@@ -1,0 +1,30 @@
+name: Github Actions for jogoDaVelha
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v2
+
+      - name: Configura o ambiente Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Instala o pip com dependencias
+        run: |
+          python -m ensurepip --upgrade
+          pip install --upgrade pip
+
+      - name: Define o paht PYTHONPATH
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
+      - name: Executa os testes unitarios
+        run: python -m unittest test_jogoDaVelha.py
